@@ -6,15 +6,19 @@
 (add-to-list 'package-archives
              '("tromey" . "http://tromey.com/elpa/") t)
 
+(add-to-list 'package-archives
+             '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+
 (package-initialize)
 
 (when (not package-archive-contents)
   (package-refresh-contents))
 
 (global-set-key (kbd "C-x C-.") 'end-of-buffer)
+(global-set-key (kbd "C-b") 'recenter-top-bottom)
 (global-set-key (kbd "C-x C-,") 'beginning-of-buffer)
-(global-set-key (kbd "C-.") 'paredit-forward)
-(global-set-key (kbd "C-,") 'paredit-backward)
+;;(global-set-key (kbd "C-.") 'paredit-forward)
+;;(global-set-key (kbd "C-,") 'paredit-backward)
 (global-set-key (kbd "C-<return>") 'newline-and-indent)
 
 
@@ -23,7 +27,9 @@
 
 ;(add-to-list 'load-path "/home/ryan/.emacs.d/libraries/structured-haskell-mode/elisp")
 ;(require 'shm)
-;(add-hook 'haskell-mode-hook 'structured-haskell-mode)
+                                        ;(add-hook 'haskell-mode-hook 'structured-haskell-mode)
+(add-hook 'haskell-mode-hook 'company-mode)
+;; (add-hook 'haskell-mode-hook 'company-mode)
 
 (add-hook 'inferior-haskell-mode-hook
           (lambda()
@@ -72,6 +78,8 @@
 (require 'minor-mode-hack)
 ;(add-hook nav-mode-hook'
 ;          (lambda () (raise-minor-mode-map-alist 'nav-mode)))
+
+(require 'paredit)
 
 (nav-mode)
 
@@ -138,7 +146,7 @@
  '(custom-safe-themes (quote ("9e54a6ac0051987b4296e9276eecc5dfb67fdcd620191ee553f40a9b6d943e78" "7f1263c969f04a8e58f9441f4ba4d7fb1302243355cb9faecb55aec878a06ee9" "1157a4055504672be1df1232bed784ba575c60ab44d8e6c7b3800ae76b42f8bd" "cf08ae4c26cacce2eebff39d129ea0a21c9d7bf70ea9b945588c1c66392578d1" "5ee12d8250b0952deefc88814cf0672327d7ee70b16344372db9460e9a0e3ffc" "52588047a0fe3727e3cd8a90e76d7f078c9bd62c0b246324e557dfa5112e0d0c" default)))
  '(delete-selection-mode t)
  '(global-subword-mode t)
- '(haskell-mode-hook (quote (turn-on-haskell-doc turn-on-haskell-indent turn-on-haskell-indentation)) t)
+ '(haskell-mode-hook (quote (turn-on-haskell-doc-mode turn-on-haskell-indent turn-on-haskell-indentation)) t)
  '(next-screen-context-lines 3))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -189,3 +197,16 @@
 (auto-fill-mode 1)
 (if (eq window-system 'x)
 (font-lock-mode 1))))
+
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;;(eval-after-load 'flycheck
+;;  '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
+
+(autoload 'ghc-init "ghc" nil t)
+(autoload 'ghc-debug "ghc" nil t)
+(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+
+(eval-after-load 'company
+  '(add-to-list 'company-backends 'company-ghc))
+
+
